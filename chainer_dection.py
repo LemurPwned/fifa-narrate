@@ -1,5 +1,3 @@
-import matplotlib.pyplot as plt
-
 from chainercv.datasets import voc_bbox_label_names
 from chainercv.links import SSD300
 from chainercv.utils import read_image
