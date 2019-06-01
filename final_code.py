@@ -8,14 +8,13 @@ import argparse
 import sys
 import numpy as np
 import os.path
-from ball_detect import BallDetector
 import imutils
 from scipy.spatial import distance as dist
-
-
+from ball_detect import BallDetector
+import boundary_detection
 
 bd = BallDetector()
-
+winName = "Football analysis"
 
 # Initialize the parameters
 confThreshold = 0.5  # Confidence threshold
@@ -141,10 +140,19 @@ while True:
     else:
         break
 
+scores_xpos = None
+scores_ypos = None
+surnames_xposL = None
+surnames_yposL = None
+surnames_xposR = None
+surnames_yposR = None
+
+
 while cv.waitKey(1) < 0:
 
     # get frame from the video
     hasFrame, frame = cap.read()
+    counter+=1
 
     frame = imutils.resize(frame, width=700)
     frameCopy = frame.copy()
@@ -169,6 +177,20 @@ while cv.waitKey(1) < 0:
         # Release device
         cap.release()
         break
+
+    
+    if counter % 150 == 0:
+        print(counter)
+        scores_xpos, scores_ypos = boundary_detection.findScores(frameCopy)
+        surnames_xposL, surnames_yposL, surnames_xposR, surnames_yposR = boundary_detection.findSurnames(frameCopy)
+    
+    if scores_xpos != None:
+        cv.rectangle(frame, (scores_xpos[0], scores_ypos[0]), (scores_xpos[1], scores_ypos[1]), (255, 0, 0), 3)
+    if surnames_xposL != None:
+        cv.rectangle(frame, (surnames_xposL[0], surnames_yposL[0]),(surnames_xposL[1], surnames_yposL[1]), (255, 0, 0), 3)
+    if surnames_xposR != None:
+        cv.rectangle(frame, (surnames_xposR[0], surnames_yposR[0]),(surnames_xposR[1], surnames_yposR[1]), (255, 0, 0), 3)
+     
 
     # Create a 4D blob from a frame.
     blob = cv.dnn.blobFromImage(
