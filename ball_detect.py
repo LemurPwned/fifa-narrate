@@ -25,7 +25,21 @@ class BallDetector:
 
     def is_ROI(self, center, pos, tolerance=100):
         """
-        is tracked in roi?
+        Verifies if a given point is in ROI 
+        ROI is given by ROI center and tolerance respective to that center
+        Parameters
+        ----------
+        center: tuple(int, int)
+            center of ROI
+        pos: tuple(int, int)
+            position which is verified to be in ROI
+        tolerance: int
+            tolerance of ROI window (respective to center)
+
+        Returns
+        ----------
+        bool
+            true if pos is in ROI
         """
         x, y = pos
         if (center[0]-tolerance <= x) and (center[1]-tolerance <= y):
@@ -41,6 +55,20 @@ class BallDetector:
                        2, (255, 255, 0), 2)
 
     def find_min_distance_to_last_ball_position(self, candidate_points, last_ball_position):
+        """
+        Calculates the distance relative to the last registered ball position
+        The distance is calculated for each of the candidates in the set
+        Parameters
+        -------
+        candidate_points: list(tuple(int, int))
+            candidate ball positions
+        last_ball_position: tuple(int, int)
+            last registered ball position
+        Returns
+        -------
+        tuple(int, int) 
+            calculated ball position
+        """
         min_distance = 9999
         min_distance_index = 0
         for i, candidate_pos in enumerate(candidate_points):
@@ -54,6 +82,19 @@ class BallDetector:
     def find_min_distance_index(self, persistence_list, roi):
         """
         find index of min euclidian distance of roi objects
+        Parameters 
+        ------
+        peristence list: list 
+            list of candidates to find a minimal distance
+        roi: tuple(int, int, int, int)
+            region of interest
+
+        Returns 
+        ------
+        min_dist_index: int
+            index of persitence list with minimal distance
+        min_dist int
+            minimal distance from roi
         """
         min_dist_index = 0
         min_dist = 999999
@@ -67,6 +108,14 @@ class BallDetector:
     def find_max_persistence(self, persistence_list):
         """
         locate max persistence object
+        Parameters 
+        ------
+        peristence list: list 
+            list of candidates to find a minimal distance
+        Returns
+        ------
+        max_per: int
+            value of maximum persistence
         """
         max_per = 0
         for obj in persistence_list:
@@ -87,6 +136,11 @@ class BallDetector:
         persistence_list[min_dist_index].h = h
 
     class Tracked:
+        """
+        Object that registers tracked objects
+        Calculates frame persistence, velocity and position
+        """
+
         def __init__(self, x, y, w, h):
             self.x = x
             self.y = y
@@ -109,7 +163,15 @@ class BallDetector:
 
     def process_ball(self, rate, image_draw, image):
         """
-            main function to detect and update our prediction of ball location
+        Main function to detect and update our prediction of ball location
+        Parameters 
+        ------
+        rate: int
+            rate that indicates processsing intensity
+        image_draw: np.array
+            image on which data will be drawn
+        image: np.array
+            image on which we will be calculating
         """
         self.idx += 1
         self.image_draw = image_draw
@@ -128,7 +190,7 @@ class BallDetector:
         res = cv2.cvtColor(res, cv2.COLOR_HSV2BGR)
         res = cv2.cvtColor(res, cv2.COLOR_BGR2GRAY)
 
-        contours, hierarchy = cv2.findContours(
+        contours, _ = cv2.findContours(
             res, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
         candidates = []
         for contour in contours:
@@ -136,12 +198,9 @@ class BallDetector:
             roi = (x, y, w, h)
             if self.is_ROI(center, (x, y), tolerance=self.tolerance):
                 if (h <= 12) and (w <= 12):
-                    bb = self.image[x:x+w, y:y+h, :]
-                    mean_color = np.mean(np.mean(bb, axis=0), axis=0)
                     (x, y), radius = cv2.minEnclosingCircle(contour)
                     if radius > 2:
                         continue
-                    area = np.pi*(radius**2)
                     guessed_area = cv2.contourArea(contour)
                     if guessed_area <= 7 and guessed_area >= 3:
                         center_x = (int(x), int(y))
@@ -158,7 +217,6 @@ class BallDetector:
                         cv2.circle(self.image_draw, center_x,
                                    radius, (0, 255, 0), 2)
 
-        print(candidates)
         if candidates != []:
             new_ball_pos = self.find_min_distance_to_last_ball_position(
                 candidates, new_ball_pos)
