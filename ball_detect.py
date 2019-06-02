@@ -21,7 +21,8 @@ class BallDetector:
         self.ball_positions, self.ball_speeds = [], [0]
         self.acc_pos = (0, 0)
 
-    def distance(self, x, y): return np.sqrt((x[0]-y[0])**2 + (x[1]-y[1])**2)
+    @staticmethod
+    def distance(x, y): return np.sqrt((x[0]-y[0])**2 + (x[1]-y[1])**2)
 
     def is_ROI(self, center, pos, tolerance=100):
         """
