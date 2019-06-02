@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>boundary_detection.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>boundary_detection.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Determines if color is in range suitable for 
+string name
+Parameters</p>
+<hr />
+<p>color: tuple(int, int, int)
+    RGB color tuple
+proper: string
+    name of the color that needs to match the tuple</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">isProperColor</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="n">proper</span><span class="o">=</span><span class="s1">&#39;violet&#39;</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="n">proper</span> <span class="o">==</span> <span class="s1">&#39;violet&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">color</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">65</span> <span class="ow">or</span> <span class="n">color</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">50</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="n">color</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="n">color</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">65</span> <span class="ow">or</span> <span class="n">color</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">50</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">elif</span> <span class="n">proper</span> <span class="o">==</span> <span class="s1">&#39;white&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">color</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">240</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="n">color</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">240</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="n">color</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">240</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">findTime</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">x_max</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">y_max</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">x_min</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">y_min</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">x_max</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">y_max</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">y_max</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">x_max</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">x_min</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">y_min</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">x_min</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">y_max</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">xpos</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_max</span><span class="p">,</span> <span class="n">x_min</span><span class="p">]</span>
+    <span class="n">ypos</span> <span class="o">=</span> <span class="p">[</span><span class="n">y_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">isProperColor</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">],</span> <span class="s1">&#39;white&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">xpos</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">xpos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+
+                <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">xpos</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">xpos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+
+                <span class="k">if</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">ypos</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">ypos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+
+                <span class="k">if</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="n">ypos</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">ypos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+    <span class="n">checker</span> <span class="o">=</span> <span class="p">[</span><span class="n">ypos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">4</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">xpos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">xpos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">)]</span>
+    <span class="n">colors</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="n">checker</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">checker</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="k">return</span> <span class="n">xpos</span><span class="p">,</span> <span class="n">ypos</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Finds the bounding box of scores in the frame
+Parameters</p>
+<hr />
+<p>frame: np.array
+    Frame to be investigated for scores BB
+Returns</p>
+<hr />
+<p>bounding box: tuple(xpos, ypos)
+    tuple of 4 coordinates 2x xpos, 2x ypos deteriming
+    the bounding box of scores</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">findScores</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">y_max</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">x_max</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">xpos</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_max</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">ypos</span> <span class="o">=</span> <span class="p">[</span><span class="n">y_max</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">isProperColor</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">xpos</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">xpos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+
+                <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">xpos</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">xpos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+
+                <span class="k">if</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">ypos</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">ypos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+
+                <span class="k">if</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="n">ypos</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">ypos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+    <span class="n">checker</span> <span class="o">=</span> <span class="p">[</span><span class="n">ypos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">4</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">xpos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">xpos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">)]</span>
+    <span class="n">colors</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="n">checker</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">checker</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="k">if</span> <span class="n">colors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">120</span> <span class="ow">and</span> <span class="n">colors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">140</span> \
+            <span class="ow">and</span> <span class="n">colors</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">240</span> \
+            <span class="ow">and</span> <span class="n">colors</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">25</span> <span class="ow">and</span> <span class="n">colors</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">xpos</span><span class="p">,</span> <span class="n">ypos</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Finds the bounding box of player names in the frame
+Parameters</p>
+<hr />
+<p>frame: np.array
+    Frame to be investigated for player names BB
+Returns</p>
+<hr />
+<p>bounding box: tuple
+    tuple of 4, left player name and right player name
+    each consists of xpos, ypos, each xpos and ypos are 
+    the 2 coordinates xpos (min, max) , ypos (min, max)
+    that form the bounding box</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">findSurnames</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">y_minL</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span><span class="o">*</span><span class="mf">0.75</span><span class="p">)</span>
+    <span class="n">y_maxL</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="p">))</span>
+    <span class="n">x_maxL</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="mf">0.25</span><span class="p">)</span>
+
+    <span class="n">xposL</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_maxL</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">yposL</span> <span class="o">=</span> <span class="p">[</span><span class="n">y_maxL</span><span class="p">,</span> <span class="n">y_minL</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">y_minL</span><span class="p">,</span> <span class="n">y_maxL</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_maxL</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">isProperColor</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">xposL</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">xposL</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+
+                <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">xposL</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">xposL</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+
+                <span class="k">if</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">yposL</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">yposL</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+                <span class="k">if</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="n">yposL</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">yposL</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+
+    <span class="n">y_minR</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span><span class="o">*</span><span class="mf">0.75</span><span class="p">)</span>
+    <span class="n">y_maxR</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="p">))</span>
+    <span class="n">x_maxR</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">x_minR</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="mf">0.75</span><span class="p">)</span>
+
+    <span class="n">xposR</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_maxR</span><span class="p">,</span> <span class="n">x_minR</span><span class="p">]</span>
+    <span class="n">yposR</span> <span class="o">=</span> <span class="p">[</span><span class="n">y_maxR</span><span class="p">,</span> <span class="n">y_minR</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">y_minR</span><span class="p">,</span> <span class="n">y_maxR</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x_minR</span><span class="p">,</span> <span class="n">x_maxR</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">isProperColor</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">xposR</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">xposR</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+
+                <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">xposR</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">xposR</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+
+                <span class="k">if</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">yposR</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">yposR</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+
+                <span class="k">if</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="n">yposR</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">yposR</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+
+    <span class="k">if</span> <span class="n">xposL</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">x_maxL</span> <span class="ow">and</span> <span class="n">xposL</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">yposL</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">y_maxL</span> <span class="ow">and</span> <span class="n">yposL</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">y_minL</span><span class="p">:</span>
+        <span class="n">xposL</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">yposL</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">if</span> <span class="n">xposR</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">x_maxR</span> <span class="ow">and</span> <span class="n">xposR</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">x_minR</span> <span class="ow">and</span> <span class="n">yposR</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">y_maxR</span> <span class="ow">and</span> <span class="n">yposR</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">y_minR</span><span class="p">:</span>
+        <span class="n">xposR</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">yposR</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">return</span> <span class="n">xposL</span><span class="p">,</span> <span class="n">yposL</span><span class="p">,</span> <span class="n">xposR</span><span class="p">,</span> <span class="n">yposR</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

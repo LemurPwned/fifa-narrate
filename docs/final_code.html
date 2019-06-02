@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>final_code.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>final_code.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>This code is written at BigVision LLC. It is based on the OpenCV project. It is subject to the license terms in the LICENSE file found in this distribution and at http://opencv.org/license.html</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Usage example:  python3 object_detection_yolo.py &ndash;video=run.mp4
+                python3 object_detection_yolo.py &ndash;image=bird.jpg</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">import</span> <span class="nn">cv2</span> <span class="kn">as</span> <span class="nn">cv</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>import argparse</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">import</span> <span class="nn">imutils</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">distance</span> <span class="k">as</span> <span class="n">dist</span>
+<span class="kn">from</span> <span class="nn">ball_detect</span> <span class="kn">import</span> <span class="n">BallDetector</span>
+<span class="kn">import</span> <span class="nn">boundary_detection</span>
+
+<span class="n">bd</span> <span class="o">=</span> <span class="n">BallDetector</span><span class="p">()</span>
+<span class="n">winName</span> <span class="o">=</span> <span class="s2">&quot;Football analysis&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Initialize the parameters</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">confThreshold</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># Confidence threshold</span>
+<span class="n">nmsThreshold</span> <span class="o">=</span> <span class="mf">0.4</span>  <span class="c1"># Non-maximum suppression threshold</span>
+<span class="n">inpWidth</span> <span class="o">=</span> <span class="mi">416</span>  <span class="c1"># Width of network&#39;s input image</span>
+<span class="n">inpHeight</span> <span class="o">=</span> <span class="mi">416</span>  <span class="c1"># Height of network&#39;s input image</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Load names of classes</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">classesFile</span> <span class="o">=</span> <span class="s2">&quot;coco.names&quot;</span>
+<span class="n">classes</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">classesFile</span><span class="p">,</span> <span class="s1">&#39;rt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">classes</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Give the configuration and weight files for the model and load the network using them.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">modelConfiguration</span> <span class="o">=</span> <span class="s2">&quot;yolov3.cfg&quot;</span>
+<span class="n">modelWeights</span> <span class="o">=</span> <span class="s2">&quot;yolov3.weights&quot;</span>
+
+<span class="n">net</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">dnn</span><span class="o">.</span><span class="n">readNetFromDarknet</span><span class="p">(</span><span class="n">modelConfiguration</span><span class="p">,</span> <span class="n">modelWeights</span><span class="p">)</span>
+<span class="n">net</span><span class="o">.</span><span class="n">setPreferableBackend</span><span class="p">(</span><span class="n">cv</span><span class="o">.</span><span class="n">dnn</span><span class="o">.</span><span class="n">DNN_BACKEND_OPENCV</span><span class="p">)</span>
+<span class="n">net</span><span class="o">.</span><span class="n">setPreferableTarget</span><span class="p">(</span><span class="n">cv</span><span class="o">.</span><span class="n">dnn</span><span class="o">.</span><span class="n">DNN_TARGET_CPU</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>gets output names for labes from network  <br />
+net: dnn network object
+    network used to make predictions
+Returns</p>
+<hr />
+<p>list:
+    all names generated by network</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">getOutputsNames</span><span class="p">(</span><span class="n">net</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>Get the names of all the layers in the network</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">layersNames</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">getLayerNames</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>Get the names of the output layers, i.e. the layers with unconnected outputs</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="p">[</span><span class="n">layersNames</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">net</span><span class="o">.</span><span class="n">getUnconnectedOutLayers</span><span class="p">()]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>Draw the predicted bounding box</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>draws predicted player box on image
+Parameters</p>
+<hr />
+<p>classId: int 
+    id of class which was detected
+conf: int
+    network output confidence level for this particular prediction
+left: int
+    left x coordinate of player box
+top: int
+    top y coordinate of player box
+right: int
+    right x coordinate of player box
+bottom: int 
+    bottom y coordinate of player box</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">drawPred</span><span class="p">(</span><span class="n">classId</span><span class="p">,</span> <span class="n">conf</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">bottom</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>Draw a bounding box.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="n">classes</span><span class="p">[</span><span class="n">classId</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;person&quot;</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">cv</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">top</span><span class="p">),</span> <span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">bottom</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">178</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>finds player coordinates if ball is in player box
+players: list
+    list of all players (bounding boxes) that are detected by 
+    YOLO network and processed by postprocess    <br />
+    ball - coordinates x, y of ball
+Returns</p>
+<hr />
+<p>list:
+    returns coordinates of player that is near ball, or None if 
+    no such player has been found.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">find_ball_player</span><span class="p">(</span><span class="n">players</span><span class="p">,</span> <span class="n">ball</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">stickedPlayer</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">for</span> <span class="n">player</span> <span class="ow">in</span> <span class="n">players</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ball</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">player</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">and</span> <span class="n">ball</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">player</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">ball</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">player</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="ow">and</span> <span class="n">ball</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">player</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">stickedPlayer</span> <span class="o">=</span> <span class="n">player</span>
+
+    <span class="k">return</span> <span class="n">stickedPlayer</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>finds main player color, it is work in progress
+ player - 4 coordinates of playerBox
+ image - clean image to analyse data</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">find_main_color_of_player</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">playerBox</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="n">player</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">player</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">player</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span><span class="n">player</span><span class="p">[</span><span class="mi">3</span><span class="p">]]</span>
+    <span class="n">hist</span> <span class="o">=</span> <span class="n">playerBox</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">][</span><span class="n">playerBox</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">230</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>print(len(hist))</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <p>processes output from neural network, drops objects with low confidence and add labels to image
+frame: np.array 
+    frame of image that will be preprocessed
+outs: list 
+    list of bounding boxes output from network
+Returns</p>
+<hr />
+<p>list:
+     players coordinates that were found</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">outs</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">frameHeight</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">frameWidth</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <p>Scan through all the bounding boxes output from the network and keep only the
+ones with high confidence scores. Assign the box&rsquo;s class label as the class with the highest score.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">classIds</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">confidences</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">boxes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">out</span> <span class="ow">in</span> <span class="n">outs</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">detection</span> <span class="ow">in</span> <span class="n">out</span><span class="p">:</span>
+            <span class="n">scores</span> <span class="o">=</span> <span class="n">detection</span><span class="p">[</span><span class="mi">5</span><span class="p">:]</span>
+            <span class="n">classId</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+            <span class="n">confidence</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="n">classId</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">confidence</span> <span class="o">&gt;</span> <span class="n">confThreshold</span><span class="p">:</span>
+                <span class="n">center_x</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">detection</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">frameWidth</span><span class="p">)</span>
+                <span class="n">center_y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">detection</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">frameHeight</span><span class="p">)</span>
+                <span class="n">width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">detection</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">frameWidth</span><span class="p">)</span>
+                <span class="n">height</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">detection</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">frameHeight</span><span class="p">)</span>
+                <span class="n">left</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">center_x</span> <span class="o">-</span> <span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="n">top</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">center_y</span> <span class="o">-</span> <span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="n">classIds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">classId</span><span class="p">)</span>
+                <span class="n">confidences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">confidence</span><span class="p">))</span>
+                <span class="n">boxes</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">left</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">])</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p>Perform non maximum suppression to eliminate redundant overlapping boxes with
+lower confidences.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">indices</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">dnn</span><span class="o">.</span><span class="n">NMSBoxes</span><span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="n">confidences</span><span class="p">,</span> <span class="n">confThreshold</span><span class="p">,</span> <span class="n">nmsThreshold</span><span class="p">)</span>
+    <span class="n">players</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">:</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="n">boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">drawPred</span><span class="p">(</span><span class="n">classIds</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">confidences</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">left</span><span class="p">,</span>
+                 <span class="n">top</span><span class="p">,</span> <span class="n">left</span> <span class="o">+</span> <span class="n">width</span><span class="p">,</span> <span class="n">top</span> <span class="o">+</span> <span class="n">height</span><span class="p">)</span>
+        <span class="n">players</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">left</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">left</span><span class="o">+</span><span class="n">width</span><span class="p">,</span> <span class="n">top</span> <span class="o">+</span> <span class="n">height</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">players</span>
+
+
+<span class="n">cv</span><span class="o">.</span><span class="n">namedWindow</span><span class="p">(</span><span class="n">winName</span><span class="p">,</span> <span class="n">cv</span><span class="o">.</span><span class="n">WINDOW_NORMAL</span><span class="p">)</span>
+
+<span class="n">cap</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="s2">&quot;FIFA.mp4&quot;</span><span class="p">)</span>
+
+<span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">hasFrame</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">counter</span> <span class="o">&lt;</span> <span class="mi">120</span><span class="p">:</span>
+        <span class="k">continue</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">break</span>
+
+<span class="n">scores_xpos</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">scores_ypos</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">surnames_xposL</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">surnames_yposL</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">surnames_xposR</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">surnames_yposR</span> <span class="o">=</span> <span class="bp">None</span>
+
+
+<span class="k">while</span> <span class="n">cv</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p>get frame from the video</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">hasFrame</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">frame</span> <span class="o">=</span> <span class="n">imutils</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">700</span><span class="p">)</span>
+    <span class="n">frameCopy</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">bd</span><span class="o">.</span><span class="n">picked_ball_position</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">cv</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">winName</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+            <span class="n">cv</span><span class="o">.</span><span class="n">setMouseCallback</span><span class="p">(</span><span class="n">winName</span><span class="p">,</span> <span class="n">bd</span><span class="o">.</span><span class="n">set_ball_position</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">bd</span><span class="o">.</span><span class="n">picked_ball_position</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">k</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">):</span>
+                    <span class="k">break</span>
+                <span class="k">elif</span> <span class="n">k</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      <p>print(bd.picked_ball_position)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                    <span class="n">cv</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">bd</span><span class="o">.</span><span class="n">picked_ball_position</span><span class="p">,</span>
+                              <span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">break</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">hasFrame</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Done processing !!!&quot;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Output file is stored as &quot;</span><span class="p">,</span> <span class="n">outputFile</span><span class="p">)</span>
+        <span class="n">cv</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">3000</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      <p>Release device</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">cap</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+        <span class="k">break</span>
+
+    <span class="k">if</span> <span class="n">counter</span> <span class="o">%</span> <span class="mi">150</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span>
+        <span class="n">scores_xpos</span><span class="p">,</span> <span class="n">scores_ypos</span> <span class="o">=</span> <span class="n">boundary_detection</span><span class="o">.</span><span class="n">findScores</span><span class="p">(</span><span class="n">frameCopy</span><span class="p">)</span>
+        <span class="n">surnames_xposL</span><span class="p">,</span> <span class="n">surnames_yposL</span><span class="p">,</span> <span class="n">surnames_xposR</span><span class="p">,</span> <span class="n">surnames_yposR</span> <span class="o">=</span> <span class="n">boundary_detection</span><span class="o">.</span><span class="n">findSurnames</span><span class="p">(</span>
+            <span class="n">frameCopy</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">scores_xpos</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">cv</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">(</span><span class="n">scores_xpos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">scores_ypos</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                     <span class="p">(</span><span class="n">scores_xpos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">scores_ypos</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">surnames_xposL</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">cv</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">(</span><span class="n">surnames_xposL</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">surnames_yposL</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="p">(</span>
+            <span class="n">surnames_xposL</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">surnames_yposL</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">surnames_xposR</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">cv</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">(</span><span class="n">surnames_xposR</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">surnames_yposR</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="p">(</span>
+            <span class="n">surnames_xposR</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">surnames_yposR</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <p>Create a 4D blob from a frame.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">blob</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">dnn</span><span class="o">.</span><span class="n">blobFromImage</span><span class="p">(</span>
+        <span class="n">frame</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">255</span><span class="p">,</span> <span class="p">(</span><span class="n">inpWidth</span><span class="p">,</span> <span class="n">inpHeight</span><span class="p">),</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">crop</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      <p>Sets the input to the network</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">net</span><span class="o">.</span><span class="n">setInput</span><span class="p">(</span><span class="n">blob</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      <p>Runs the forward pass to get output of the output layers</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">outs</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">getOutputsNames</span><span class="p">(</span><span class="n">net</span><span class="p">))</span>
+
+    <span class="n">players</span> <span class="o">=</span> <span class="n">postprocess</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">outs</span><span class="p">)</span>
+    <span class="n">bd</span><span class="o">.</span><span class="n">process_ball</span><span class="p">(</span><span class="n">hasFrame</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">frameCopy</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      <p>if len(bd.ball_positions) &gt; 0:
+   sticked_player = find_ball_player(players, bd.ball_positions[-1])
+   find_main_color_of_player(sticked_player, frameCopy)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">cv</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">winName</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>
