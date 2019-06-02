@@ -25,7 +25,7 @@ win_name = 'Match Detection'
 test_vide_file = 'FIFA 19  Chelsea vs Tottenham Hotspur  Premier League Gameplay.mp4'
 
 
-def detect_true_rois(image):
+def detect_true_rois(image, detected_rois=False):
     """Tries to find relevant rois for text extraction
 
     Parameters 

@@ -7,14 +7,17 @@ from scipy.spatial import distance as dist
 
 
 class BallDetector:
+    """
+    Object responsible for football tracking
+    Registers the past and present ball positions
+    Determines the params for tracking
+    """
+
     def __init__(self):
         self.picked_ball_position = None
         self.count = 0
 
         self.idx = 0
-        self.tracker = cv2.TrackerCSRT_create()
-        self.tracker_bb = False
-        self.tracker_roi = None
         self.tolerance = 120
         self.kernel = np.ones((13, 13), np.uint8)
         self.persistent = []
@@ -126,7 +129,16 @@ class BallDetector:
 
     def update_persistence(self, persistence_list, min_dist_index, roi):
         """
-        update roi parameters of persistence
+        update roi parameters of persistence using output from 
+        find_max_persistence function
+        Parameters 
+        ------
+        peristence list: list 
+            list of candidates to find a minimal distance
+        min_dist_index: int
+            index of min distance from persistence list
+        roi: tuple(x, y, w, h)
+            region of ball interest (ball ROI)
         """
         x, y, w, h = roi
         persistence_list[min_dist_index].persistence_count += 1

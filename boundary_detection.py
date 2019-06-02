@@ -1,4 +1,14 @@
 def isProperColor(color, proper='violet'):
+    """
+    Determines if color is in range suitable for 
+    string name
+    Parameters
+    ------
+    color: tuple(int, int, int)
+        RGB color tuple
+    proper: string
+        name of the color that needs to match the tuple
+    """
     if proper == 'violet':
         if color[0] > 65 or color[0] < 50:
             return False
@@ -48,6 +58,18 @@ def findTime(frame, x_max=None, y_max=None, x_min=None, y_min=None):
 
 
 def findScores(frame):
+    """
+    Finds the bounding box of scores in the frame
+    Parameters
+    -----
+    frame: np.array
+        Frame to be investigated for scores BB
+    Returns
+    -----
+    bounding box: tuple(xpos, ypos)
+        tuple of 4 coordinates 2x xpos, 2x ypos deteriming
+        the bounding box of scores
+    """
     y_max = int(len(frame)/4)
     x_max = int(len(frame[0])/4)
     xpos = [x_max, 0]
@@ -77,6 +99,20 @@ def findScores(frame):
 
 
 def findSurnames(frame):
+    """
+    Finds the bounding box of player names in the frame
+    Parameters
+    -----
+    frame: np.array
+        Frame to be investigated for player names BB
+    Returns
+    -----
+    bounding box: tuple
+        tuple of 4, left player name and right player name
+        each consists of xpos, ypos, each xpos and ypos are 
+        the 2 coordinates xpos (min, max) , ypos (min, max)
+        that form the bounding box
+    """
     y_minL = int(len(frame)*0.75)
     y_maxL = int(len(frame))
     x_maxL = int(len(frame[0])*0.25)
