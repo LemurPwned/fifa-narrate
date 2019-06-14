@@ -1,20 +1,16 @@
 ## fifa-narrate project
 This project contains code and documentation for the live commentary software
 Auto generated documentation can be found in `/docs` folder
-Can be viewed as html pages
+Can be viewed as html pages <br/>
 
-[Main processing function](docs/final_code.html)
+[Main processing function](final_code.html) <br/>
+[Ball detection module](ball_detect.html) <br/>
+[Yolo_module](yolo.html)  <br/>
+[Text detection module](text_detection.html) <br/>
 
-[Ball detection module](docs/ball_detect.html)
-
-[Yolo_module](docs/yolo.html)
-
-[Text detection module](docs/text_detection.html)
-
-Running the demo is as simple as 
+Running the demo is as simple as <br/>
 `python final_code.py`
-
-
+ <br/>
 ### Recognition:
 * ball detection JM
 * player detection YOLO
