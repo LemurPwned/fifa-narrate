@@ -1,10 +1,15 @@
 # fifa-narrate
 Auto generated documentation can be found in `/docs` folder
 Can be viewed as html pages
-[Main processing function](docs/final_code.html)
+
+[Main processing function](https://raw.githack.com/LemurPwned/fifa-narrate/master/docs/final_code.html?token=ACAM2YDHAUF7ROVP6NNG4QC5BU5DY)
+
 [Ball detection module](docs/ball_detect.html)
+
 [Yolo_module](docs/yolo.html)
+
 [Text detection module](docs/text_detection.html)
+
 Running the demo is as simple as 
 `python final_code.py`
 
