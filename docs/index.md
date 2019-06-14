@@ -3,10 +3,10 @@ This project contains code and documentation for the live commentary software
 Auto generated documentation can be found in `/docs` folder
 Can be viewed as html pages <br/>
 
-[Main processing function](final_code.html) <br/>
-[Ball detection module](ball_detect.html) <br/>
-[Yolo_module](yolo.html)  <br/>
-[Text detection module](text_detection.html) <br/>
+[Main processing function](https://lemurpwned.github.io/fifa-narrate/final_code.html) <br/>
+[Ball detection module](https://lemurpwned.github.io/fifa-narrate/ball_detect.html) <br/>
+[Yolo_module](https://lemurpwned.github.io/fifa-narrate/yolo.html)  <br/>
+[Text detection module](https://lemurpwned.github.io/fifa-narrate/text_detection.html) <br/>
 
 Running the demo is as simple as <br/>
 `python final_code.py`
