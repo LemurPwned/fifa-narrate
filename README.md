@@ -1,4 +1,7 @@
 # fifa-narrate
+Running the demo is as simple as 
+`python final_code.py`
+
 
 ### Recognition:
 * ball detection JM
