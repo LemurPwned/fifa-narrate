@@ -1,4 +1,5 @@
-# fifa-narrate
+## fifa-narrate project
+This project contains code and documentation for the live commentary software
 Auto generated documentation can be found in `/docs` folder
 Can be viewed as html pages
 
